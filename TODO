@@ -1,0 +1,5 @@
+TODO:
+	o  Use malloc
+	o  Check output from splint
+	o  Create fetcher
+	o  Separate .c to .c + .h
