@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SOURCELINK "http://standards.ieee.org/regauth/oui/oui.txt"
 #ifndef VENDORS_FILE
 #define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"
 #endif
@@ -15,17 +16,23 @@ int
 main(int argc, char *argv[])
 {
     FILE *input = NULL;
-    char searchitem[9], vendor[256]; /* TODO Use malloc */
+    char searchitem[10], vendor[256]; /* TODO Use malloc */
     int found, i, j;
+
     found = i = j = 0;
 
-    if (argc < 2) {
+    if (argc == 1) {
+        if (fgets(searchitem, sizeof(searchitem),stdin) == NULL)
+			errx(4, "%s", "Failed to read input");
+    } else if (argc == 2) {
+		memcpy(searchitem, argv[1], sizeof(searchitem));
+	} else {
         extern char *__progname;
         fprintf(stderr, "usage: %s MAC-address DB-name\n", __progname);
         exit(1);
-    } 
+	}
 
-    if (strlen(argv[1]) < 8)
+    if (strlen(searchitem) < 8)
         errx(3, "%s", "Too short for a mac address.");
 
 #ifndef VENDORS_FILE
@@ -40,7 +47,7 @@ main(int argc, char *argv[])
         if (j % 3 == 0)
             searchitem[i] = '-';
         else
-            searchitem[i] = toupper(argv[1][i]);
+            searchitem[i] = toupper(searchitem[i]);
     }
     searchitem[8] = '\0';
 
