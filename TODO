@@ -1,5 +1,4 @@
 TODO:
-	o  Use malloc
-	o  Check output from splint
-	o  Create fetcher
-	o  Separate .c to .c + .h
+	[ ] Check output from splint
+	[ ] Create fetcher
+	[ ] Separate .c to .c + .h

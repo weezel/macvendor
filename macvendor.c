@@ -5,7 +5,7 @@
 #include <string.h>
 
 #ifndef VENDORS_FILE
-#define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"
+#define VENDORS_FILE "/home/weezel/lnxmount/ohjelmointi/c/macvendor/vendors.txt"
 #endif
 
 int
@@ -15,7 +15,7 @@ int
 main(int argc, char *argv[])
 {
     FILE *input = NULL;
-    char searchitem[9], vendor[256]; /* TODO Use malloc */
+    char searchitem[9], vendor[256];
     int found, i, j;
     found = i = j = 0;
 
@@ -36,7 +36,7 @@ main(int argc, char *argv[])
        errx(2, "Could not open the database: %s\n", argv[2]);
 #endif
 
-    for (i = 0, j = 1; i < 8; i++, j++) {
+    for (i=0, j=1; i < 8; i++, j++) {
         if (j % 3 == 0)
             searchitem[i] = '-';
         else
@@ -63,6 +63,8 @@ int
 isInLine(char *p, char *r)
 {
     int i = 0;
+
+    printf("isInLine p=%s, r=%s\n", p, r);
 
     for (i = 0; i < 8; i++) {
         if (*(&p[i]) != *(&r[i]))
