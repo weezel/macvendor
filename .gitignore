@@ -1,3 +1,5 @@
 macvendor
+netfetch
 *.core
+*.swp
 vendors*.txt

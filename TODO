@@ -2,3 +2,4 @@ TODO:
 	[ ] Check output from splint
 	[ ] Create fetcher
 	[ ] Separate .c to .c + .h
+	[ ] Use some sane data structure for storing the addresses

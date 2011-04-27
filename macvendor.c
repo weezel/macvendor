@@ -4,8 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "netfetch.h"
+
 #ifndef VENDORS_FILE
-#define VENDORS_FILE "/home/weezel/lnxmount/ohjelmointi/c/macvendor/vendors.txt"
+#if defined(__OpenBSD)
+#define VENDORS_FILE "/mnt/weezel/ohjelmointi/c/macvendor/vendors.txt"
+#endif
+#if defined(__linux)
+#define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"
+#endif
+#else
+#define VENDORS_FILE "."
 #endif
 
 int
@@ -28,13 +37,8 @@ main(int argc, char *argv[])
     if (strlen(argv[1]) < 8)
         errx(3, "%s", "Too short for a mac address.");
 
-#ifndef VENDORS_FILE
-    if ((input = fopen(argv[2], "r")) == NULL)
-       errx(2, "Could not open the database: %s\n", argv[2]);
-#else
     if ((input = fopen(VENDORS_FILE, "r")) == NULL)
        errx(2, "Could not open the database: %s\n", argv[2]);
-#endif
 
     for (i=0, j=1; i < 8; i++, j++) {
         if (j % 3 == 0)
@@ -63,8 +67,6 @@ int
 isInLine(char *p, char *r)
 {
     int i = 0;
-
-    printf("isInLine p=%s, r=%s\n", p, r);
 
     for (i = 0; i < 8; i++) {
         if (*(&p[i]) != *(&r[i]))
