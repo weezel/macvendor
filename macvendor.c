@@ -7,10 +7,10 @@
 #include "netfetch.h"
 
 #ifndef VENDORS_FILE
-#if defined(__OpenBSD)
+#if defined __OpenBSD__
 #define VENDORS_FILE "/mnt/weezel/ohjelmointi/c/macvendor/vendors.txt"
 #endif
-#if defined(__linux)
+#if defined __linux__
 #define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"
 #endif
 #else

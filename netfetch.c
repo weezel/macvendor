@@ -18,6 +18,7 @@ char *build_get_query();
 int main()
 {
 	struct addrinfo hints, *res;
+	int		*writedbfile;
 	int		 bytes, gaierr, sent, sock, tmpres;
 	char	 buffer[BUFSIZ + 1];
 	char	*get;
@@ -55,11 +56,18 @@ int main()
 		sent += tmpres;
 	}
 
+	if ((open("testdb.txt", "r")) == NULL) {
+		fprintf(stderr, "Error while writing to file.\n");
+		exit(20);
+	}
+
 	while ((bytes = read(sock, buffer, BUFSIZ)) > 0)
-		fprintf(stdout, "%s\n", buffer);
+		write(writedbfile, buffer, sizeof(buffer));
 		/*write(stdout, buffer, bytes);*/
 
 	close(sock);
+	fclose(writedbfile);
+
 	freeaddrinfo(res);
 	free(get);
 

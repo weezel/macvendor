@@ -1,4 +1,6 @@
 TODO:
+	[ ] Use getopts and add functionality for update switch
+	[ ] Use file descriptors
 	[ ] Check output from splint
 	[ ] Create fetcher
 	[ ] Separate .c to .c + .h
