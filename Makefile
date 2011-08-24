@@ -1,4 +1,4 @@
-CC=clang
+CC=g++
 
 all: macvendor.c
 	${CC} -ansi -Wall -o macvendor macvendor.c

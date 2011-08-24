@@ -1,0 +1,17 @@
+digraph G
+{
+	internet [label = "Internet addr"];
+
+	subgraph local
+	{
+		stdin [label = "stdin"];
+		stdout [label = "stdout"];
+		stderr [label = "stderr"];
+		file [label = "File input"];
+		socket [label = "socket"];
+	};
+
+	socket -> internet [color = "green"];
+	internet -> socket -> file [color = "blue"];
+
+}

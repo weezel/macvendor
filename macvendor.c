@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "netfetch.h"
+/*#include "netfetch.h"*/
 
 #ifndef VENDORS_FILE
 #if defined __OpenBSD__

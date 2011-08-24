@@ -14,12 +14,13 @@
 #define USER_AGENT "Mozilla"
 
 char *build_get_query();
+char *open_socket(addrinfo *, *);
 
 int main()
 {
-	struct addrinfo hints, *res;
-	int		*writedbfile;
-	int		 bytes, gaierr, sent, sock, tmpres;
+	struct	 addrinfo hints, *res;
+	int	*writedbfile;
+	int	 bytes, gaierr, sent, sock, tmpres;
 	char	 buffer[BUFSIZ + 1];
 	char	*get;
 
@@ -50,26 +51,31 @@ int main()
 	get = build_get_query();
 
 	/* Send the query to the server */
-	while (sent < strlen(get)) { 
+	while (sent < strlen(get)) {
 		if ((tmpres = send(sock, get + sent, strlen(get) - sent, 0)) == -1)
 			err(1, "Cannot send query");
 		sent += tmpres;
 	}
 
-	if ((open("testdb.txt", "r")) == NULL) {
+	if ((fopen("testdb.txt", "w")) == NULL) {
 		fprintf(stderr, "Error while writing to file.\n");
 		exit(20);
 	}
 
 	while ((bytes = read(sock, buffer, BUFSIZ)) > 0)
-		write(writedbfile, buffer, sizeof(buffer));
-		/*write(stdout, buffer, bytes);*/
+	    fprintf(stdout, "%s\n", buffer);
 
-	close(sock);
-	fclose(writedbfile);
+	/*write(writedbfile, buffer, sizeof(buffer));*/
+	/*write(stdout, buffer, bytes);*/
 
-	freeaddrinfo(res);
-	free(get);
+	if (sock)
+		close(sock);
+	if (writedbfile)
+		close(*writedbfile);
+	if (res)
+		freeaddrinfo(res);
+	if (get)
+		free(get);
 
 	return (0);
 }
@@ -77,7 +83,7 @@ int main()
 char
 *build_get_query()
 {
-	int		 qsize = 0;
+	int	 qsize = 0;
 	char	*query = NULL;
 	const char *header = "GET /%s HTTP/1.1\nHost: %s\nUser-Agent: %s\n\nConnection: close\n\n";
 
