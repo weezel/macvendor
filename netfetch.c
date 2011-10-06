@@ -3,6 +3,7 @@
 #include <netdb.h>
 
 #include <err.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,47 +13,36 @@
 #define HTTP_PATH "/develop/regauth/oui/oui.txt"
 #define HTTP_PORT "80"
 #define USER_AGENT "Mozilla"
+#define DB_NAME "dendors.txt"
 
-char *build_get_query();
-char *open_socket(addrinfo *, *);
+static FILE	*fin;
+static char *cause;
+int fd_internet;
+
+int initialize_connection(const char *, const char *);
+char send_http_query(int);
+void readwriter(int);
 
 int main()
 {
-	struct	 addrinfo hints, *res;
-	int	*writedbfile;
-	int	 bytes, gaierr, sent, sock, tmpres;
+	int	 s;
+	int	 bytes, sent, tmpres;
 	char	 buffer[BUFSIZ + 1];
 	char	*get;
 
 	bytes = sent = tmpres = 0;
 
-	memset(&buffer, 0, sizeof(buffer));
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-
-	if ((gaierr = getaddrinfo(HTTP_HOST, HTTP_PORT, &hints, &res)) != 0) {
-		fprintf(stderr, "getaddrres error %d: %s\n",
-				gaierr, gai_strerror(gaierr));
-		return (2);
+	get = build_http_get_query();
+	s = initialize_connection(HTTP_HOST, HTTP_PORT);
+	if (s == -1) {
+		warn("%s", cause);
+		exit(10);
 	}
 
-	if ((sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
-		perror("socket");
-		return (2);
-	}
-
-	if (connect(sock, res->ai_addr, res->ai_addrlen) != 0) {
-		perror("connect");
-		close(sock);
-		return (2);
-	}
-
-	get = build_get_query();
-
+	fin = fdopen(s, "r+");
 	/* Send the query to the server */
 	while (sent < strlen(get)) {
-		if ((tmpres = send(sock, get + sent, strlen(get) - sent, 0)) == -1)
+		if ((tmpres = send(fd_internet, get + sent, strlen(get) - sent, 0)) == -1)
 			err(1, "Cannot send query");
 		sent += tmpres;
 	}
@@ -65,13 +55,8 @@ int main()
 	while ((bytes = read(sock, buffer, BUFSIZ)) > 0)
 	    fprintf(stdout, "%s\n", buffer);
 
-	/*write(writedbfile, buffer, sizeof(buffer));*/
-	/*write(stdout, buffer, bytes);*/
-
 	if (sock)
 		close(sock);
-	if (writedbfile)
-		close(*writedbfile);
 	if (res)
 		freeaddrinfo(res);
 	if (get)
@@ -80,20 +65,72 @@ int main()
 	return (0);
 }
 
-char
-*build_get_query()
+int
+initialize_connection(const char *host, const char *serv)
 {
-	int	 qsize = 0;
-	char	*query = NULL;
+	int error, sock = -1;
+	struct addrinfo hints, *res0 = NULL, *res;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+
+	error = getaddrinfo(host, serv, &hints, &res0);
+	if (error) {
+		warnx("%s", gai_strerror(error));
+		return -1;
+	}
+
+	for (res = res0; res; res = res->ai_next) {
+		sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+		if (sock == -1) {
+			cause = "socket;
+			continue;
+		}
+again:
+		if (connect(sock, res->ai_addr, res->ai_addrlen) < 0) {
+			int save_errno;
+
+			if (errno == EINTR) /* TODO Make counter */
+				goto again;
+			save_errno = errno;
+			close(sock);
+			errno = save_errno;
+			sock = -1;
+			cause = "connect";
+			continue;
+		}
+		break;
+	}
+	if (sock == -1)
+		warn("cannot connect");
+
+	freeaddrinfo(res0);
+
+	return sock;
+
+}
+
+int
+send_http_query(int nfd)
+{
+	int	len = 0;
+	char	*query;
+	/*
 	const char *header = "GET /%s HTTP/1.1\nHost: %s\nUser-Agent: %s\n\nConnection: close\n\n";
+	*/
 
-	/* -5 is to consider the %s %s %s in tpl and the ending \0 */
-	qsize = strlen(HTTP_HOST) + strlen(HTTP_PATH) + strlen(USER_AGENT) + strlen(header) - 5;
+	len = asprintf(&query, "GET /%s HTTP/1.1\nHost: %s\nUser-Agent: %s\n\nConnection: close\n\n",
+		HTTP_PATH, HTTP_HOST, USER_AGENT);
 
-	if ((query = calloc(qsize, sizeof(char *))) == NULL)
-		  err(1, "calloc failure in build_get_query");
-	sprintf(query, header, HTTP_PATH, HTTP_HOST, USER_AGENT);
+	fin = open(nfd, "r+");
 
+	free(query);
 	return query;
 }
 
+void
+readwriter(int nfd)
+{
+	int wfd = fileno(stdin);
+}

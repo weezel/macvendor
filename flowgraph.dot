@@ -4,14 +4,14 @@ digraph G
 
 	subgraph local
 	{
-		stdin [label = "stdin"];
 		stdout [label = "stdout"];
-		stderr [label = "stderr"];
-		file [label = "File input"];
+		stdin [label = "stdin"];
+		fileout [label = "File out"];
 		socket [label = "socket"];
 	};
 
+	internet -> fileout;
 	socket -> internet [color = "green"];
-	internet -> socket -> file [color = "blue"];
+	internet -> socket -> filein [color = "blue"];
 
 }
