@@ -1,11 +1,12 @@
-CC=g++
+LIBS=-lcurl
+CC=gcc
 
 all: macvendor.c
-	${CC} -ansi -Wall -o macvendor macvendor.c
+	${CC} ${LIBS} -ansi -Wall -o macvendor macvendor.c netfetch.c
 	mv -f macvendor ${HOME}/bin
 
 netfetch: netfetch.c
-	${CC} -Wall -o netfetch netfetch.c
+	${CC} ${LIBS} -Wall -o netfetch netfetch.c
 
 debug:
 	${CC} -g -ansi -Wall -o macvendor macvendor.c

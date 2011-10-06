@@ -2,6 +2,6 @@ TODO:
 	[ ] Use getopts and add functionality for update switch
 	[ ] Use file descriptors
 	[ ] Check output from splint
-	[ ] Create fetcher
-	[ ] Separate .c to .c + .h
+	[1] Create fetcher (curl one is ready, TODO independent fetcher?)
+	[½] Separate .c to .c + .h
 	[ ] Use some sane data structure for storing the addresses
