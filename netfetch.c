@@ -16,27 +16,28 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "common.h"
+#include "netfetch.h"
 
-#define URL "http://standards.ieee.org/develop/regauth/oui/oui.txt"
-
-size_t write_data(void *, size_t, size_t, FILE *);
-static int progress(void *, double, double, double, double );
-
-void
-netfetch(void)
+int
+netfetch(const char *fname)
 {
-	char	 outfilename[FILENAME_MAX] = VENDORS_FILE;
 	FILE	*fp;
 	CURL	*curl;
 	CURLcode res = 0;
 
 	curl = curl_easy_init();
 
-	if (curl == NULL)
-		err(1, NULL);
+	if (curl == NULL) {
+		fprintf(stderr, "CURL initialization failed\n");
+		return 1;
+	}
 
-	fp = fopen(outfilename, "wb");
+	if (strlen(fname) >= FILENAME_MAX) {
+		fprintf(stderr, "File name too long\n");
+		return 10;
+	}
+
+	fp = fopen(fname, "wb");
 	curl_easy_setopt(curl, CURLOPT_URL, URL);
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
@@ -44,13 +45,17 @@ netfetch(void)
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 	res = curl_easy_perform(curl);
 
-	if (res != 0)
+	if (res != 0) {
 		fprintf(stderr, "%s\n", curl_easy_strerror(res));
+		return 2;
+	}
 
 	curl_easy_cleanup(curl);
 
 	if (fp)
 		fclose(fp);
+
+	return 0;
 }
 
 
@@ -63,7 +68,7 @@ write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 	return written;
 }
 
-static int
+int
 progress(void *p, double dltotal, double dlnow, double ultotal, double ulnow)
 {
 	int percentage;

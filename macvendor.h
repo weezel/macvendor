@@ -1,5 +1,5 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef _MACVENDOR_H_
+#define _MACVENDOR_H_
 
 #ifndef VENDORS_FILE
 #if defined __OpenBSD__
@@ -12,4 +12,9 @@
 #define VENDORS_FILE "vendors.txt"
 #endif
 
-#endif /* _COMMON_H_ */
+#define MAC_LEN 8
+
+void usage(void);
+int isinline(char *, char *);
+
+#endif /* _MACVENDOR_H_ */
