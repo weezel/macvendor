@@ -1,16 +1,18 @@
-LIBS=-lcurl
 CC=gcc
+OS=$(shell uname)
 
 all: macvendor.c macvendor.h netfetch.h
+.ifeq ($(OS), Linux)
+	LDFLAGS = -lcurl
 	${CC} ${LIBS} -ansi -Wall -o macvendor macvendor.c netfetch.c
+endif
+
 	mv -f macvendor ${HOME}/bin
 
-netfetch: netfetch.c netfetch.h
-	${CC} ${LIBS} -Wall -o netfetch netfetch.c
+.ifeq ($(OS), OpenBSD)
 
 debug:
-	${CC} -g -ansi -Wall -o macvendor macvendor.c
-	${CC} -g -Wall -o netfetch netfetch.c
+	CC += -g 
 
 clean:
 	rm -f macvendor *.core
