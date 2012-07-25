@@ -47,26 +47,3 @@ Update vendors database:
 
 	macvendor -u
 
-
-# TODO
-### Done
-	[X] Use getopts and add functionality for update switch
-
-	[X] Create fetcher (curl one is ready, TODO independent fetcher?)
-
-	[X] Separate .c to .c + .h
-
-### High priority
-	[ ] Replace strlen() calls from wrong places
-
-	[ ] unsigned int -> size_t
-
-	[ ] check comparefile function, looks suspicious
-
-### Normal priority
-	[ ] Use file descriptors
-
-	[ ] Use some sane data structure for storing the addresses
-
-### Low priority
-	[ ] Check output from splint
