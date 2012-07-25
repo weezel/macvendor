@@ -1,7 +1,9 @@
 macvendor
 netfetch
-*.core
 core
-*.swp
 vendors*.txt
+*.core
+*.swp
 *.png
+*.core
+*.o

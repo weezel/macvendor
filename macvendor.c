@@ -1,5 +1,5 @@
 /*
- * Copyright Ville Valkonen 2010-2011
+ * Copyright Ville Valkonen 2010-2012
  */
 
 #include <ctype.h>
@@ -65,7 +65,7 @@ main(int argc, char *argv[])
 	if (found == 0)
 		fprintf(stdout, "MAC %s not found.", searchitem);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 
@@ -75,7 +75,7 @@ usage(void)
 	extern char *__progname;
 
 	(void)fprintf(stderr, "usage: %s [-u] MAC-address\n", __progname);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 

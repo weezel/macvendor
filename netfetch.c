@@ -6,7 +6,6 @@
  */
 
 #include <curl/curl.h>
-#include <curl/types.h>
 #include <curl/easy.h>
 
 #include <err.h>
@@ -18,16 +17,21 @@
 
 #include "netfetch.h"
 
+
+struct progress {
+	double	 lastrun;
+	CURL	*curl;
+};
+
 int
 netfetch(const char *fname)
 {
-	FILE	*fp;
-	CURL	*curl;
-	CURLcode res = 0;
+	FILE		*fp;
+	CURL		*curl;
+	CURLcode	 res = 0;
+	struct progress	 prog;
 
-	curl = curl_easy_init();
-
-	if (curl == NULL) {
+	if ((curl = curl_easy_init()) == NULL) {
 		fprintf(stderr, "CURL initialization failed\n");
 		return 1;
 	}
@@ -36,28 +40,28 @@ netfetch(const char *fname)
 		fprintf(stderr, "File name too long\n");
 		return 10;
 	}
+	prog.lastrun = 0;
+	prog.curl = curl;
 
 	fp = fopen(fname, "wb");
 	curl_easy_setopt(curl, CURLOPT_URL, URL);
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress);
-	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &prog);
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 	res = curl_easy_perform(curl);
 
-	if (res != 0) {
+	if (res)
 		fprintf(stderr, "%s\n", curl_easy_strerror(res));
-		return 2;
-	}
 
 	curl_easy_cleanup(curl);
 
 	if (fp)
 		fclose(fp);
 
-	return 0;
+	return (int) res;
 }
-
 
 size_t
 write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -71,11 +75,22 @@ write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 int
 progress(void *p, double dltotal, double dlnow, double ultotal, double ulnow)
 {
-	int percentage;
+	double		 curtime = 0;
+	struct progress	*prog;
+	CURL		*curl;
 
-	percentage = dlnow / dltotal * 100;
+	prog = (struct progress *) p;
+	curl = prog->curl;
+
+	curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &curtime);
+	if ((curtime - prog->lastrun) >= MINPROGRESSTIME) {
+		prog->lastrun = curtime;
+		fprintf(stderr, "TOTALTIME: %f\r\n", curtime);
+	}
+
+	fprintf(stderr, "%.1lf kiB / %.1lf kiB [%.1lf%%]\r",
+		dlnow / 1024, dltotal / 1024, PERCENTAGE(dlnow, dltotal));
 	fflush(stderr);
-	fprintf(stderr, "Progress: %d%%\r", percentage);
 
 	return 0;
 }
