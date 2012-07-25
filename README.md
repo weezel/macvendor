@@ -40,7 +40,7 @@ Go to source code directory:
 
 	cd macvendor
 
-Build and compile `macvendor` and copy `macvendor` binary under $HOME/bin
+Build and compile macvendor and move `macvendor` binary under $HOME/bin
 
 	make
 
