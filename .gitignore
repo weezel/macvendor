@@ -1,2 +1,9 @@
 macvendor
+netfetch
+core
 vendors*.txt
+*.core
+*.swp
+*.png
+*.core
+*.o

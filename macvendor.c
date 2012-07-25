@@ -1,80 +1,93 @@
+/*
+ * Copyright Ville Valkonen 2010-2012
+ */
+
 #include <ctype.h>
 #include <err.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define SOURCELINK "http://standards.ieee.org/regauth/oui/oui.txt"
-#ifndef VENDORS_FILE
-#define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"
-#endif
+#include "macvendor.h"
+#include "netfetch.h"
 
-int
-isInLine(char *, char *);
 
 int
 main(int argc, char *argv[])
 {
-    FILE *input = NULL;
-    char searchitem[10], vendor[256]; /* TODO Use malloc */
-    int found, i, j;
+	FILE	*input = NULL;
+	char	 ch;
+	char	 searchitem[MAC_LEN + 1], vendor[256];
+	int	 found = 0, i = 0, j = 0, uflag = 0;
 
-    found = i = j = 0;
+	if (argc < 2)
+		usage();
 
-    if (argc == 1) {
-        if (fgets(searchitem, sizeof(searchitem),stdin) == NULL)
-			errx(4, "%s", "Failed to read input");
-    } else if (argc == 2) {
-		memcpy(searchitem, argv[1], sizeof(searchitem));
-	} else {
-        extern char *__progname;
-        fprintf(stderr, "usage: %s MAC-address DB-name\n", __progname);
-        exit(1);
+	while ((ch = getopt(argc, (char *const *)argv, "u")) != -1) {
+		switch ((char)ch) {
+		case 'u':
+			uflag = 1;
+			fprintf(stdout, "Updating vendors database\n");
+			if (netfetch(VENDORS_FILE) != 0) {
+				fprintf(stderr, "Error while updating vendors file\n");
+				return 100;
+			}
+			return 0;
+		default:
+			usage();
+		}
 	}
 
-    if (strlen(searchitem) < 8)
-        errx(3, "%s", "Too short for a mac address.");
+	if (strlen(argv[argc - 1]) < MAC_LEN)
+		errx(3, "%s", "Too short for a MAC-address.");
 
-#ifndef VENDORS_FILE
-    if ((input = fopen(argv[2], "r")) == NULL)
-       errx(2, "Could not open the database: %s\n", argv[2]);
-#else
-    if ((input = fopen(VENDORS_FILE, "r")) == NULL)
-       errx(2, "Could not open the database: %s\n", argv[2]);
-#endif
+	if ((input = fopen(VENDORS_FILE, "r+")) == NULL)
+		errx(2, "Could not open the database: %s\n", VENDORS_FILE);
 
-    for (i = 0, j = 1; i < 8; i++, j++) {
-        if (j % 3 == 0)
-            searchitem[i] = '-';
-        else
-            searchitem[i] = toupper(searchitem[i]);
-    }
-    searchitem[8] = '\0';
+	/* Capitalize octets and unify octet dividers */
+	for (i=0, j=1; i < MAC_LEN; i++, j++) {
+		if (j % 3 == 0)
+			searchitem[i] = '-';
+		else
+			searchitem[i] = toupper(argv[argc - 1][i]);
+	}
+	searchitem[MAC_LEN] = '\0';
 
-    while (fgets(vendor, sizeof(vendor), input) != NULL) {
-        if (isInLine(&searchitem[0], &vendor[0]) == 1) {
-            fprintf(stdout, "%s", vendor);
-            found = 1;
-        }
-    }
-    fclose(input);
+	while (fgets(vendor, sizeof(vendor), input) != NULL) {
+		if (isinline(&searchitem[0], &vendor[0]) == 1) {
+			fprintf(stdout, "%s", vendor);
+			found = 1;
+		}
+	}
+	fclose(input);
 
-    if (found == 0)
-        errx(3, "MAC %s not found.", searchitem);
+	if (found == 0)
+		fprintf(stdout, "MAC %s not found.", searchitem);
 
-    return 0;
+	return EXIT_SUCCESS;
+}
+
+
+void
+usage(void)
+{
+	extern char *__progname;
+
+	(void)fprintf(stderr, "usage: %s [-u] MAC-address\n", __progname);
+	exit(EXIT_FAILURE);
 }
 
 
 int
-isInLine(char *p, char *r)
+isinline(char *p, char *r)
 {
-    int i = 0;
+	int i = 0;
 
-    for (i = 0; i < 8; i++) {
-        if (*(&p[i]) != *(&r[i]))
-            return 0;
-    }
-    return 1;
+	for (i = 0; i < MAC_LEN; i++) {
+		if (*(&p[i]) != *(&r[i]))
+			return 0;
+	}
+	return 1;
 }
 
