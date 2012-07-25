@@ -1,5 +1,5 @@
 CC	 = gcc
-CFLAGS	+= -g -Wall -Wextra -pedantic -std=c99
+CFLAGS	+= -Wall -Wextra -pedantic -ansi
 CFLAGS	+= -Wstrict-prototypes -Wmissing-prototypes
 CFLAGS	+= -Wmissing-declarations -Wsign-compare
 CFLAGS	+= -Wshadow -Wpointer-arith -Wcast-qual
@@ -7,20 +7,21 @@ INCLUDES = -I /usr/include
 LDFLAGS	 = -lcurl
 OS	 = $(shell uname)
 
-ifeq ($(OS), Linux)
-	LDFLAGS = -lbsd
-endif
+#ifeq ($(OS), Linux)
+#	INCLUDES += $(pkg-config --libs-only-L libcurl)
+#endif
 ifeq ($(OS), OpenBSD)
-	INCLUDES += -I /usr/local/include -L /usr/local/lib
+	INCLUDES += -I /usr/local/include
+	LDFLAGS += -L /usr/local/lib
 endif
 
 .PHONY: all clean
 
 all: macvendor netfetch
-	${CC} ${CFLAGS} ${INCLUDES} ${LIBS} ${LDFLAGS} netfetch.o macvendor.o -o macvendor
+	${CC} ${CFLAGS} ${INCLUDES} netfetch.o macvendor.o -o macvendor ${LDFLAGS}
 	mv -f macvendor ${HOME}/bin
 clean:
-	rm -f macvendor *.core
+	rm -f macvendor *.core *.o
 macvendor:
 	${CC} ${CFLAGS} macvendor.c -c -o macvendor.o
 netfetch:

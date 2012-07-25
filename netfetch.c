@@ -88,7 +88,7 @@ progress(void *p, double dltotal, double dlnow, double ultotal, double ulnow)
 		fprintf(stderr, "TOTALTIME: %f\r\n", curtime);
 	}
 
-	fprintf(stderr, "%.1lf kiB / %.1lf kiB [%.1lf%%]\r",
+	fprintf(stderr, "%.1f kiB / %.1f kiB [%.1f%%]\r",
 		dlnow / 1024, dltotal / 1024, PERCENTAGE(dlnow, dltotal));
 	fflush(stderr);
 

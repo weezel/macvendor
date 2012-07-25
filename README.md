@@ -13,14 +13,18 @@ program to C language also. Program uses CURL library for fetching the newest
 vendors file. CURL lib was chosen since it's well written, BSD licensed and
 actively developed.
 
+# Dependencies
+	* libcurl-dev
+	* (maybe) libbsd-dev
+
 # Install
 Curl developer libraries are needed and therefore those should be present. In
-Debian based system system check can be done with the following command:
+Debian based system, check can be done with the following command:
 
 	dpkg -l |grep -i libcurl |grep dev
 
 If if returns nothing, your system likely lacks support. In Ubuntu 11.04
-functionality can be achiewed this way:
+functionality can be achieved this way:
 
 	sudo apt-get install libcurl4-gnutls-dev
 
@@ -34,7 +38,7 @@ Go to source code directory:
 
 	cd macvendor
 
-Install `macvendor` binary under $HOME/bin
+Build and compile `macvendor` and copy `macvendor` binary under $HOME/bin
 
 	make
 
