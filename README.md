@@ -14,8 +14,10 @@ vendors file. CURL lib was chosen since it's well written, BSD licensed and
 actively developed.
 
 # Dependencies
-	* libcurl-dev
-	* (maybe) libbsd-dev
+
+* libcurl-dev
+
+* (maybe) libbsd-dev
 
 # Install
 Curl developer libraries are needed and therefore those should be present. In
