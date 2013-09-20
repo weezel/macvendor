@@ -2,7 +2,7 @@ CC	 = gcc
 CFLAGS	+= -Wall -Wextra -pedantic -ansi
 CFLAGS	+= -Wstrict-prototypes -Wmissing-prototypes
 CFLAGS	+= -Wmissing-declarations -Wsign-compare
-CFLAGS	+= -Wshadow -Wpointer-arith -Wcast-qual -g
+CFLAGS	+= -Wshadow -Wpointer-arith -Wcast-qual
 #CFLAGS	+= -fsanitize=address -fno-omit-frame-pointer
 INCLUDES = -I /usr/include
 LDFLAGS	 = -lcurl
