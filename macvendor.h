@@ -3,7 +3,7 @@
 
 #ifndef VENDORS_FILE
 #if defined __OpenBSD__
-#define VENDORS_FILE "/home/weezel/ohj/macvendor/vendors.txt"
+#define VENDORS_FILE "/home/weezel/mnt/store/ohjelmointi/c/macvendor/vendors.txt"
 #endif
 #if defined __linux__
 #define VENDORS_FILE "/home/weezel/ohjelmointi/c/macvendor/vendors.txt"

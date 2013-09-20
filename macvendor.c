@@ -18,6 +18,7 @@ main(int argc, char *argv[])
 {
 	FILE	*input = NULL;
 	char	 ch;
+	char	*match;
 	char	 searchitem[MAC_LEN + 1], vendor[256];
 	int	 found = 0, i = 0, j = 0, uflag = 0;
 
@@ -46,7 +47,7 @@ main(int argc, char *argv[])
 		errx(2, "Could not open the database: %s\n", VENDORS_FILE);
 
 	/* Capitalize octets and unify octet dividers */
-	for (i=0, j=1; i < MAC_LEN; i++, j++) {
+	for (i = 0, j = 1; i < MAC_LEN; i++, j++) {
 		if (j % 3 == 0)
 			searchitem[i] = '-';
 		else
@@ -55,9 +56,10 @@ main(int argc, char *argv[])
 	searchitem[MAC_LEN] = '\0';
 
 	while (fgets(vendor, sizeof(vendor), input) != NULL) {
-		if (isinline(&searchitem[0], &vendor[0]) == 1) {
+		if ((match = strcasestr(vendor, searchitem))) {
 			fprintf(stdout, "%s", vendor);
 			found = 1;
+			break;
 		}
 	}
 	fclose(input);
@@ -76,18 +78,5 @@ usage(void)
 
 	(void)fprintf(stderr, "usage: %s [-u] MAC-address\n", __progname);
 	exit(EXIT_FAILURE);
-}
-
-
-int
-isinline(char *p, char *r)
-{
-	int i = 0;
-
-	for (i = 0; i < MAC_LEN; i++) {
-		if (*(&p[i]) != *(&r[i]))
-			return 0;
-	}
-	return 1;
 }
 
