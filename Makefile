@@ -1,5 +1,5 @@
-CC	 = gcc
-CFLAGS	+= -Wall -Wextra -pedantic -ansi
+CC	 = clang
+CFLAGS	+= -std=c99 -Wall -Wextra -pedantic
 CFLAGS	+= -Wstrict-prototypes -Wmissing-prototypes
 CFLAGS	+= -Wmissing-declarations -Wsign-compare
 CFLAGS	+= -Wshadow -Wpointer-arith -Wcast-qual
@@ -13,14 +13,14 @@ OS	 = $(shell uname)
 #endif
 ifeq ($(OS), OpenBSD)
 	INCLUDES += -I /usr/local/include
-	LDFLAGS += -L /usr/local/lib
+	LDFLAGS += -L /usr/local/lib `curl-config --static-libs`
 endif
 
 .PHONY: all clean
 
 all: macvendor netfetch
 	${CC} ${CFLAGS} ${INCLUDES} netfetch.o macvendor.o -o macvendor ${LDFLAGS}
-	mv -f macvendor ${HOME}/bin
+	#mv -f macvendor ${HOME}/bin
 clean:
 	rm -f macvendor *.core *.o
 macvendor:
