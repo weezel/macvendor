@@ -1,5 +1,5 @@
-#ifndef _MACVENDOR_H_
-#define _MACVENDOR_H_
+#ifndef __MACVENDOR_H__
+#define __MACVENDOR_H__
 
 #ifndef VENDORS_FILE
 #if defined __OpenBSD__

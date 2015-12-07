@@ -1,5 +1,5 @@
-#ifndef _NETFETCH_H_
-#define _NETFETCH_H_
+#ifndef __NETFETCH_H__
+#define __NETFETCH_H__
 
 #define		URL "http://standards.ieee.org/develop/regauth/oui/oui.txt"
 #define		MINPROGRESSTIME 6000
