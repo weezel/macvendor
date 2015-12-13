@@ -65,7 +65,7 @@ main(int argc, char *argv[])
 	fclose(input);
 
 	if (found == 0)
-		fprintf(stdout, "MAC %s not found.", searchitem);
+		fprintf(stdout, "MAC %s not found.\n", searchitem);
 
 	return EXIT_SUCCESS;
 }
