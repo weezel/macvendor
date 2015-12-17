@@ -6,8 +6,8 @@
 #define		PERCENTAGE(dlnow, dltotal) \
 		(dlnow / dltotal * 100)
 
-int netfetch(const char *);
-size_t write_data(void *, size_t, size_t, FILE *);
-int progress(void *, double, double, double, double );
+int	netfetch(const char *);
+size_t	write_data(void *, size_t, size_t, FILE *);
+int	progress(void *, double, double, double, double);
 
 #endif /* _NETFETCH_H_ */
