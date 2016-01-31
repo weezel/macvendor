@@ -1,5 +1,5 @@
 /*
- * Copyright Ville Valkonen 2010-2012
+ * Copyright Ville Valkonen 2010-2016
  */
 
 #include <ctype.h>
@@ -29,15 +29,20 @@ main(int argc, char *argv[])
 		switch ((char)ch) {
 		case 'u':
 			uflag = 1;
-			fprintf(stdout, "Updating vendors database\n");
-			if (netfetch(VENDORS_FILE) != 0) {
-				fprintf(stderr, "Error while updating vendors file\n");
-				return 100;
-			}
-			return 0;
+			break;
 		default:
 			usage();
+			/* NOTREACHED */
 		}
+	}
+
+	if (uflag) {
+		fprintf(stdout, "Updating vendors database\n");
+		if (netfetch(VENDORS_FILE) != 0) {
+			fprintf(stderr, "Error while updating vendors file\n");
+			return 100;
+		}
+		return 0;
 	}
 
 	if (strlen(argv[argc - 1]) < MAC_LEN)
@@ -56,7 +61,7 @@ main(int argc, char *argv[])
 	searchitem[MAC_LEN] = '\0';
 
 	while (fgets(vendor, sizeof(vendor), input) != NULL) {
-		if ((match = strcasestr(vendor, searchitem))) {
+		if ((match = strcasecmp(vendor, searchitem)) == 0) {
 			fprintf(stdout, "%s", vendor);
 			found = 1;
 			break;

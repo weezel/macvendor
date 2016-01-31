@@ -1,5 +1,5 @@
 /*
- * Copyright Ville Valkonen 2011
+ * Copyright Ville Valkonen 2010 - 2016.
  * Partly borroved from here:
  * http://stackoverflow.com/questions/1636333/download-file-using-libcurl-in-c-c
  * http://curl.haxx.se/libcurl/c/progressfunc.html
