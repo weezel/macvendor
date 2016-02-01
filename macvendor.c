@@ -18,7 +18,6 @@ main(int argc, char *argv[])
 {
 	FILE	*input = NULL;
 	char	 ch;
-	char	*match;
 	char	 searchitem[MAC_LEN + 1], vendor[256];
 	int	 found = 0, i = 0, j = 0, uflag = 0;
 
@@ -61,7 +60,7 @@ main(int argc, char *argv[])
 	searchitem[MAC_LEN] = '\0';
 
 	while (fgets(vendor, sizeof(vendor), input) != NULL) {
-		if ((match = strcasecmp(vendor, searchitem)) == 0) {
+		if ((strcasecmp(vendor, searchitem)) == 0) {
 			fprintf(stdout, "%s", vendor);
 			found = 1;
 			break;

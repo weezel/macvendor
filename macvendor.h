@@ -6,6 +6,7 @@
 #define VENDORS_FILE "/home/weezel/mnt/store/ohjelmointi/c/macvendor/vendors.txt"
 #endif
 #if defined __linux__
+#include <strings.h> /* Silent compiler warning */
 #define VENDORS_FILE "/home/weezel/mnt/store/ohjelmointi/c/macvendor/vendors.txt"
 #endif
 #else
