@@ -1,7 +1,7 @@
 #ifndef _NETFETCH_H_
 #define _NETFETCH_H_
 
-#define		URL "http://standards.ieee.org/develop/regauth/oui/oui.txt"
+#define		URL "http://standards-oui.ieee.org/oui/oui.txt"
 #define		MINPROGRESSTIME 6000
 #define		PERCENTAGE(dlnow, dltotal) \
 		(dlnow / dltotal * 100)
