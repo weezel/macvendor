@@ -60,7 +60,7 @@ main(int argc, char *argv[])
 	searchitem[MAC_LEN] = '\0';
 
 	while (fgets(vendor, sizeof(vendor), input) != NULL) {
-		if ((strcasecmp(vendor, searchitem)) == 0) {
+		if ((strncasecmp(vendor, searchitem, MAC_LEN)) == 0) {
 			fprintf(stdout, "%s", vendor);
 			found = 1;
 			break;
