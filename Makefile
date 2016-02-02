@@ -1,16 +1,17 @@
-CC	 = gcc
-CFLAGS	+= -std=c99 -Wall -Wextra -pedantic -g -O0
-#CFLAGS	+= -fsanitize=address -fno-omit-frame-pointer
+CC	 = clang
+CFLAGS	+= -std=c99 -Wall -Wextra -pedantic
+CFLAGS	+= -fno-omit-frame-pointer
 INCLUDES = -I /usr/include
-LDFLAGS	 = -lcurl
 OS	 = $(shell uname)
 
-#ifeq ($(OS), Linux)
-#	INCLUDES += $(pkg-config --libs-only-L libcurl)
-#endif
+ifeq ($(OS), Linux)
+	LDFLAGS	 = $(shell pkg-config --libs-only-L libcurl)
+	CFLAGS	+= -fsanitize=address
+endif
+
 ifeq ($(OS), OpenBSD)
 	INCLUDES	+= -I /usr/local/include
-	LDFLAGS		+= -L /usr/local/lib `curl-config --static-libs`
+	LDFLAGS		+= -L /usr/local/lib $(shell pkg-config --libs libcurl)
 endif
 
 .PHONY: all clean macvendor netfetch
